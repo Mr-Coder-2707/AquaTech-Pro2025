@@ -766,7 +766,7 @@
     });
 
     document.getElementById('send-whatsapp').addEventListener('click', ()=>{
-      const { valid, errors, name, phone, email } = validateForm();
+      const { valid, errors, name, phone, email, location } = validateForm();
       const errBox = document.getElementById('form-error');
       const okBox  = document.getElementById('form-ok');
 
@@ -778,7 +778,7 @@
       }
 
       const items = Array.from(cart.values());
-      const msg = buildWhatsappMessage({name, phone, email}, items);
+      const msg = buildWhatsappMessage({name, phone, email, location}, items);
       
       console.log('Sending WhatsApp message:', msg);
       console.log('Phone number used:', phone);
