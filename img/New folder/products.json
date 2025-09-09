@@ -1,0 +1,33 @@
+[
+  {
+      "name": "Product 1",
+      "price": 20,
+      "image": "1.png"
+  },
+  {
+      "name": "iphone_15Pro Max",
+      "price": 2000,
+      "image": "2.png"
+  },
+  {
+      "name": "Product 3",
+      "price": 40,
+      "image": "3.png"
+  },
+  {
+      "name": "Product 4",
+      "price": 50,
+      "image": "4.png"
+  },
+  {
+      "name": "Product 5",
+      "price": 60,
+      "image": "5.png"
+  },
+  {
+      "name": "Product 6",
+      "price": 70,
+      "image": "6.png"
+  }
+  
+]
