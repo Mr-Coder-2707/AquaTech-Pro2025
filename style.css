@@ -820,7 +820,7 @@ nav {
     }
 
     .floating-cart::before {
-      content: '🛒';
+      content: '\1F6D2';
       font-size: 30px;
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
