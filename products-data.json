@@ -185,12 +185,356 @@
           "description": "اوتوماتيك موتور المياه\"ايطالي\"E SCOOLER PLUS"
       },
       {
-          "id": "p24",
-          "name": "جلبة تطويل مقاسات مختلفة ستانلس ستيل",
-          "price": 10,
-          "category": "قطع غيار",
-          "img": "./img/20250911_163036.jpg",
-          "description": "جلبة تطويل مقاسات مختلفة ستانلس ستيل"
-      }   
-  ]
+    "id": "p4",
+    "name": "اكرة جاجور جاودة عالي فبر",
+    "price": 15,
+    "category": "",
+    "img": "./WADNESDAY2/4.webp",
+    "description": "اكرة جاجور جاودة عالي فبر"
+  },
+  {
+    "id": "p5",
+    "name": "قلب محبس دفن 1/2 بوصة",
+    "price": 30,
+    "category": "",
+    "img": "./WADNESDAY2/5.webp",
+    "description": "قلب محبس دفن 1/2 بوصة"
+  },
+  {
+    "id": "p6",
+    "name": "قلب محبس دفن 3/4 بوصة نحاس",
+    "price": 40,
+    "category": "",
+    "img": "./WADNESDAY2/6.webp",
+    "description": "قلب محبس دفن 3/4 بوصة نحاس"
+  },
+  {
+    "id": "p7",
+    "name": "قلب محبس دفن 1/2 بوصة اتا",
+    "price": 50,
+    "category": "",
+    "img": "./WADNESDAY2/7.webp",
+    "description": "قلب محبس دفن 1/2 بوصة اتا"
+  },
+  {
+    "id": "p8",
+    "name": "قنطرة 6 لنية مطبخ استنلستيل",
+    "price": 30,
+    "category": "",
+    "img": "./WADNESDAY2/8.webp",
+    "description": "قنطرة 6 لنية مطبخ استنلستيل"
+  },
+  {
+    "id": "p9",
+    "name": "قنطرة 6 لنية وش استنلستيل",
+    "price": 25,
+    "category": "",
+    "img": "./WADNESDAY2/9.webp",
+    "description": "قنطرة 6 لنية وش استنلستيل"
+  },
+  {
+    "id": "p10",
+    "name": "جلبة تطويل 1/2*1/2 استنلستيل ثقيل",
+    "price": 25,
+    "category": "",
+    "img": "./WADNESDAY2/10.webp",
+    "description": "جلبة تطويل 1/2*1/2 استنلستيل ثقيل"
+  },
+  {
+    "id": "p11",
+    "name": "جلبة تطويل 1/2*1/2 نحاس",
+    "price": 35,
+    "category": "",
+    "img": "./WADNESDAY2/11.webp",
+    "description": "جلبة تطويل 1/2*1/2 نحاس"
+  },
+  {
+    "id": "p12",
+    "name": "معلقة خلاط هاند مكسر هارد نيكل كروم",
+    "price": 35,
+    "category": "",
+    "img": "./WADNESDAY2/12.webp",
+    "description": "معلقة خلاط هاند مكسر هارد نيكل كروم"
+  },
+  {
+    "id": "p13",
+    "name": "قلب مكسر كبير",
+    "price": 15,
+    "category": "",
+    "img": "./WADNESDAY2/13.webp",
+    "description": "قلب مكسر كبير"
+  },
+  {
+    "id": "p14",
+    "name": "قلب مكسر صغير",
+    "price": 15,
+    "category": "",
+    "img": "./WADNESDAY2/14.webp",
+    "description": "قلب مكسر صغير"
+  },
+  {
+    "id": "p15",
+    "name": "قلب مكسر كبير بشفة",
+    "price": 20,
+    "category": "",
+    "img": "./WADNESDAY2/15.webp",
+    "description": "قلب مكسر كبير بشفة"
+  },
+  {
+    "id": "p16",
+    "name": "قنطرة مكسر وش عادى",
+    "price": 50,
+    "category": "",
+    "img": "./WADNESDAY2/16.webp",
+    "description": "قنطرة مكسر وش عادى"
+  },
+  {
+    "id": "p17",
+    "name": "بكرة تفلون ايطالي صغيرة",
+    "price": 5,
+    "category": "",
+    "img": "./WADNESDAY2/17.webp",
+    "description": "بكرة تفلون ايطالي صغيرة"
+  },
+  {
+    "id": "p18",
+    "name": "بكرة تفلون ايطالي وسط",
+    "price": 15,
+    "category": "",
+    "img": "./WADNESDAY2/18.webp",
+    "description": "بكرة تفلون ايطالي وسط"
+  },
+  {
+    "id": "p19",
+    "name": "بكرة تفلون ايطالي كبيرة",
+    "price": 20,
+    "category": "",
+    "img": "./WADNESDAY2/19.webp",
+    "description": "بكرة تفلون ايطالي كبيرة"
+  },
+  {
+    "id": "p20",
+    "name": "بكرة تفلون ايطالي لوكس",
+    "price": 45,
+    "category": "",
+    "img": "./WADNESDAY2/20.webp",
+    "description": "بكرة تفلون ايطالي لوكس"
+  },
+  {
+    "id": "p21",
+    "name": "محبس فلتر 1/4 بوصة",
+    "price": 25,
+    "category": "",
+    "img": "./WADNESDAY2/21.webp",
+    "description": "محبس فلتر 1/4 بوصة"
+  },
+  {
+    "id": "p22",
+    "name": "كوتشة زملت مصرى",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/22.webp",
+    "description": "كوتشة زملت مصرى"
+  },
+  {
+    "id": "p23",
+    "name": "كوتشة صيني",
+    "price": 85,
+    "category": "",
+    "img": "./WADNESDAY2/23.webp",
+    "description": "كوتشة صيني"
+  },
+  {
+    "id": "p24",
+    "name": "كوتشة زملت ايطالي",
+    "price": 145,
+    "category": "",
+    "img": "./WADNESDAY2/24.webp",
+    "description": "كوتشة زملت ايطالي"
+  },
+  {
+    "id": "p25",
+    "name": "كوتشة بلونة كلبيدا",
+    "price": 170,
+    "category": "",
+    "img": "./WADNESDAY2/25.webp",
+    "description": "كوتشة بلونة كلبيدا"
+  },
+  {
+    "id": "p26",
+    "name": "كوتشة اسير زملت",
+    "price": 220,
+    "category": "",
+    "img": "./WADNESDAY2/26.webp",
+    "description": "كوتشة اسير زملت"
+  },
+  {
+    "id": "p27",
+    "name": "حنفية PG لوكس",
+    "price": 180,
+    "category": "",
+    "img": "./WADNESDAY2/27.webp",
+    "description": "حنفية PG لوكس"
+  },
+  {
+    "id": "p28",
+    "name": "حنفية PG بلس",
+    "price": 85,
+    "category": "",
+    "img": "./WADNESDAY2/28.webp",
+    "description": "حنفية PG بلس"
+  },
+  {
+    "id": "p29",
+    "name": "حنفية PG +بوز بلاستك",
+    "price": 100,
+    "category": "",
+    "img": "./WADNESDAY2/29.webp",
+    "description": "حنفية PG +بوز بلاستك"
+  },
+  {
+    "id": "p30",
+    "name": "حنفية PG انجليزي",
+    "price": 120,
+    "category": "",
+    "img": "./WADNESDAY2/30.webp",
+    "description": "حنفية PG انجليزي"
+  },
+  {
+    "id": "p31",
+    "name": "ماكينة كومبنيشن فرست (FRIST)",
+    "price": 110,
+    "category": "",
+    "img": "./WADNESDAY2/31.webp",
+    "description": "ماكينة كومبنيشن فرست (FRIST)"
+  },
+  {
+    "id": "p32",
+    "name": "سماعة دش فسيا اخضر",
+    "price": 85,
+    "category": "",
+    "img": "./WADNESDAY2/32.webp",
+    "description": "سماعة دش فسيا اخضر"
+  },
+  {
+    "id": "p33",
+    "name": "سماعة دش (VIDMAR) الماني",
+    "price": 185,
+    "category": "",
+    "img": "./WADNESDAY2/33.webp",
+    "description": "سماعة دش (VIDMAR) الماني"
+  },
+  {
+    "id": "p34",
+    "name": "خرطوم دش استنلستيل 1.5متر صامولة نحاس وبنز نحاس بني",
+    "price": 50,
+    "category": "",
+    "img": "./WADNESDAY2/34.webp",
+    "description": "خرطوم دش استنلستيل 1.5متر صامولة نحاس وبنز نحاس بني"
+  },
+  {
+    "id": "p35",
+    "name": "شطاف اتومتك ايطالي",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/35.webp",
+    "description": "شطاف اتومتك ايطالي"
+  },
+  {
+    "id": "p36",
+    "name": "صرف تركي P.V.C حوض مطبخ",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/36.webp",
+    "description": "صرف تركي P.V.C حوض مطبخ"
+  },
+  {
+    "id": "p37",
+    "name": "صرف تركي P.V.C حوض وش",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/37.webp",
+    "description": "صرف تركي P.V.C حوض وش"
+  },
+  {
+    "id": "p38",
+    "name": "ماكينة كومبنيشن بلد (BUILD)",
+    "price": 85,
+    "category": "",
+    "img": "./WADNESDAY2/38.webp",
+    "description": "ماكينة كومبنيشن بلد (BUILD)"
+  },
+  {
+    "id": "p39",
+    "name": "طاسة دش ايطالي بولي سوبر لوكس",
+    "price": 95,
+    "category": "",
+    "img": "./WADNESDAY2/39.webp",
+    "description": "طاسة دش ايطالي بولي سوبر لوكس"
+  },
+  {
+    "id": "p40",
+    "name": "محبس زاوية نحاس خفيف",
+    "price": 30,
+    "category": "",
+    "img": "./WADNESDAY2/40.webp",
+    "description": "محبس زاوية نحاس خفيف"
+  },
+  {
+    "id": "p41",
+    "name": "شطاف اتومتك سوبر لوكس مستورد",
+    "price": 110,
+    "category": "",
+    "img": "./WADNESDAY2/41.webp",
+    "description": "شطاف اتومتك سوبر لوكس مستورد"
+  },
+  {
+    "id": "p42",
+    "name": "حنفية اسنسير 3/8 سن نحاس (GOLD)",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/42.webp",
+    "description": "حنفية اسنسير 3/8 سن نحاس (GOLD)"
+  },
+  {
+    "id": "p43",
+    "name": "خرطوم دش سوستة حرارى سوبر لوكس",
+    "price": 55,
+    "category": "",
+    "img": "./WADNESDAY2/43.webp",
+    "description": "خرطوم دش سوستة حرارى سوبر لوكس"
+  },
+  {
+    "id": "p44",
+    "name": "سماعة دش فسيا اسود",
+    "price": 100,
+    "category": "",
+    "img": "./WADNESDAY2/44.webp",
+    "description": "سماعة دش فسيا اسود"
+  },
+  {
+    "id": "p45",
+    "name": "صرف حلة 3 بوصة تورو مستورد سوبرلوكس",
+    "price": 65,
+    "category": "",
+    "img": "./WADNESDAY2/45.webp",
+    "description": "صرف حلة 3 بوصة تورو مستورد سوبرلوكس"
+  },
+  {
+    "id": "p46",
+    "name": "صرف حلة 3 بوصة P.V.C",
+    "price": 35,
+    "category": "",
+    "img": "./WADNESDAY2/46.webp",
+    "description": "صرف حلة 3 بوصة P.V.C"
+  },
+  {
+    "id": "p47",
+    "name": "قنطرة مكسر مطبخ 35سم",
+    "price": null,
+    "category": "",
+    "img": "./WADNESDAY2/47.webp",
+    "description": "قنطرة مكسر مطبخ 35سم"
+  }
+      ]
 }
