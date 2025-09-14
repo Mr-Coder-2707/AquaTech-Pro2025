@@ -136,7 +136,7 @@ function renderProducts() {
     const el = document.createElement('article');
     el.className = 'product';
     el.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
+      <img src="${p.img}" alt="${p.name}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;">
       <div class="body">
         <h3>${p.name}</h3>
         <div class="price">${fmt(p.price)}</div>
@@ -227,7 +227,7 @@ function renderCart() {
     const item = document.createElement('div');
     item.className = 'cart-item';
     item.innerHTML = `
-      <img src="${product.img}" alt="${product.name}">
+      <img src="${product.img}" alt="${product.name}" loading="lazy" style="width: 60px; height: 60px; object-fit: cover;">
       <div class="cart-item-info">
         <div class="cart-item-name">${product.name}</div>
         <div class="cart-item-price">${fmt(product.price)} × ${qty} = ${fmt(line)}</div>
@@ -555,3 +555,11 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+ window.addEventListener("load", function() {
+      const loader = document.getElementById("loading-screen");
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        loader.style.display = "none";
+        document.getElementById("content").style.display = "block";
+      }, 500); // نص ثانية للانيميشن
+    });

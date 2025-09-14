@@ -11,7 +11,7 @@ async function loadProducts() {
             productDiv.className = "product";
 
             productDiv.innerHTML = `
-                <img src="${product.image}" alt="${product.name}">
+                <img src="${product.image}" alt="${product.name}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;">
                 <h2>${product.name}</h2>
                 <p>Price: $${product.price}</p>
                 <button class="buy-button" data-product="${product.name}" data-image="${product.image}">
