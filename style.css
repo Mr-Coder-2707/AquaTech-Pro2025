@@ -1133,13 +1133,13 @@ nav {
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background: linear-gradient(180deg, #0b1220, #0f172a 60%, #0b1220);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      color: white;
+      color: var(--text);
       font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
       overflow: hidden;
@@ -1153,9 +1153,9 @@ nav {
       right: 0;
       bottom: 0;
       background: 
-        radial-gradient(circle at 20% 20%, rgba(0, 255, 153, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(0, 204, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 60%, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(22, 163, 74, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(15, 23, 42, 0.3) 0%, transparent 50%);
       animation: backgroundPulse 4s ease-in-out infinite;
     }
 
@@ -1170,11 +1170,12 @@ nav {
       height: 100px;
       margin-bottom: 30px;
       animation: logoFloat 3s ease-in-out infinite;
-      filter: drop-shadow(0 10px 20px rgba(0, 255, 153, 0.3));
+      filter: drop-shadow(0 10px 20px rgba(34, 197, 94, 0.3));
       border-radius: 20px;
       position: relative;
       z-index: 1;
       transition: transform 0.3s ease;
+      border: 2px solid rgba(34, 197, 94, 0.2);
     }
 
     #loading-screen img:hover {
@@ -1192,7 +1193,7 @@ nav {
     #loading-screen h1 {
       font-size: 32px;
       margin: 0 0 10px 0;
-      background: linear-gradient(45deg, #00ff99, #00ccff, #ff6b6b, #00ff99);
+      background: linear-gradient(45deg, var(--accent), var(--accent-2), var(--text), var(--accent));
       background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -1200,10 +1201,10 @@ nav {
       animation: gradientShift 3s ease-in-out infinite, typewriter 2s steps(15) 1s forwards, centerText 0.8s ease-out 3.2s forwards;
       font-weight: 700;
       letter-spacing: 2px;
-      text-shadow: 0 0 30px rgba(0, 255, 153, 0.5);
+      text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
       position: relative;
       z-index: 1;
-      border-right: 2px solid #00ff99;
+      border-right: 2px solid var(--accent);
       overflow: hidden;
       white-space: nowrap;
       width: 0;
@@ -1231,12 +1232,12 @@ nav {
     /* إخفاء الكرسور بعد انتهاء الكتابة وتوسيط النص */
     #loading-screen h1::after {
       content: '';
-      border-right: 2px solid #00ff99;
+      border-right: 2px solid var(--accent);
       animation: blink 1s infinite 3s, hideCursor 0.1s ease-out 3.2s forwards;
     }
 
     @keyframes blink {
-      0%, 50% { border-color: #00ff99; }
+      0%, 50% { border-color: var(--accent); }
       51%, 100% { border-color: transparent; }
     }
 
@@ -1247,7 +1248,7 @@ nav {
     #loading-screen p {
       margin: 5px 0 30px;
       font-size: 18px;
-      color: #a0a0a0;
+      color: var(--muted);
       opacity: 0;
       animation: textFade 2s ease-in-out 1.5s forwards;
       position: relative;
@@ -1275,9 +1276,9 @@ nav {
       left: 0;
       width: 100%;
       height: 100%;
-      border: 4px solid rgba(255, 255, 255, 0.1);
+      border: 4px solid rgba(229, 231, 235, 0.1);
       border-radius: 50%;
-      background: conic-gradient(from 0deg, transparent, rgba(0, 255, 153, 0.1), transparent);
+      background: conic-gradient(from 0deg, transparent, rgba(34, 197, 94, 0.1), transparent);
       animation: spinnerGlow 2s ease-in-out infinite;
     }
 
@@ -1289,11 +1290,11 @@ nav {
       width: 100%;
       height: 100%;
       border: 4px solid transparent;
-      border-top: 4px solid #00ffcc;
-      border-right: 4px solid #00ff99;
+      border-top: 4px solid var(--accent);
+      border-right: 4px solid var(--accent-2);
       border-radius: 50%;
       animation: spinEnhanced 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-      filter: drop-shadow(0 0 10px rgba(0, 255, 153, 0.5));
+      filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.5));
     }
 
     @keyframes spinEnhanced {
@@ -1319,23 +1320,23 @@ nav {
     #loading-screen .loading-dots span {
       width: 10px;
       height: 10px;
-      background: linear-gradient(45deg, #00ff99, #00ccff);
+      background: linear-gradient(45deg, var(--accent), var(--accent-2));
       border-radius: 50%;
       animation: dotBounce 1.4s ease-in-out infinite both;
-      box-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
     }
 
     #loading-screen .loading-dots span:nth-child(1) { 
       animation-delay: -0.32s; 
-      background: linear-gradient(45deg, #00ff99, #00dd88);
+      background: linear-gradient(45deg, var(--accent), var(--accent-2));
     }
     #loading-screen .loading-dots span:nth-child(2) { 
       animation-delay: -0.16s; 
-      background: linear-gradient(45deg, #00ccff, #0099dd);
+      background: linear-gradient(45deg, var(--accent-2), var(--accent));
     }
     #loading-screen .loading-dots span:nth-child(3) { 
       animation-delay: 0s; 
-      background: linear-gradient(45deg, #ff6b6b, #dd5555);
+      background: linear-gradient(45deg, var(--text), var(--muted));
     }
 
     @keyframes dotBounce {
@@ -1346,7 +1347,7 @@ nav {
       40% { 
         transform: scale(1.3) translateY(-15px);
         opacity: 1;
-        box-shadow: 0 0 20px rgba(0, 255, 153, 0.8);
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
       }
     }
 
@@ -1382,16 +1383,17 @@ nav {
     .progress-container {
       width: 300px;
       height: 6px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(31, 41, 55, 0.8);
       border-radius: 3px;
       margin: 20px 0 10px;
       overflow: hidden;
       position: relative;
+      border: 1px solid var(--border);
     }
 
     .progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #00ff99, #00ccff, #ff6b6b);
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent));
       background-size: 200% 100%;
       border-radius: 3px;
       width: 0%;
@@ -1406,7 +1408,7 @@ nav {
 
     .progress-text {
       font-size: 14px;
-      color: #00ff99;
+      color: var(--accent);
       font-weight: 600;
       margin-top: 5px;
       text-align: center;
