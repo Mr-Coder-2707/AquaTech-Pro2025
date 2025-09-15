@@ -445,6 +445,11 @@
       // Update cart display
       renderCart();
       
+      // Ensure all cart counters are updated to zero
+      document.querySelectorAll('.cart-counter').forEach(element => {
+        element.textContent = '0';
+      });
+      
       // Set the flag to indicate order was completed
       orderSent = true;
       
@@ -508,6 +513,11 @@
         floatingCart.classList.remove('visible');
         floatingBadge.style.display = 'none';
       }
+      
+      // Update all elements with class cart-counter
+      document.querySelectorAll('.cart-counter').forEach(element => {
+        element.textContent = itemsCount;
+      });
     }
     
     function toggleSidebarCart() {
