@@ -772,12 +772,11 @@
     function simulateProgressLoading() {
       let progress = 0;
       const steps = [
-        { target: 20, message: 'تحميل الملفات الأساسية...' },
+        { target: 20, message: 'اصبر شويه يا صاحبي الدنيا ما طارتش...' },
         { target: 40, message: 'تحضير المنتجات...' },
         { target: 65, message: 'تحميل البيانات...' },
         { target: 85, message: 'تهيئة المتجر...' },
-        { target: 100, message: 'أشوي كده وخلاص...' }
-      ];
+        { target: 100, message: 'تحميل الملفات الأساسية...' }    ];
       
       let currentStep = 0;
       
@@ -977,4 +976,65 @@
       if (loadedImages === totalImages && loadingProgress < 80) {
         updateProgress(80);
       }
+    });
+
+    // ======= BACK TO TOP FUNCTIONALITY =======
+    document.addEventListener('DOMContentLoaded', function() {
+      const backToTopButton = document.getElementById('back-to-top');
+      
+      // Show/hide back to top button based on scroll position
+      function handleScroll() {
+        const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        const triggerHeight = 300; // Show button after scrolling 300px
+        
+        if (scrollPosition > triggerHeight) {
+          if (!backToTopButton.classList.contains('visible')) {
+            backToTopButton.classList.add('visible');
+          }
+        } else {
+          if (backToTopButton.classList.contains('visible')) {
+            backToTopButton.classList.remove('visible');
+          }
+        }
+      }
+      
+      // Smooth scroll to top function
+      function scrollToTop() {
+        const startPosition = window.pageYOffset || document.documentElement.scrollTop;
+        const duration = 800; // Animation duration in milliseconds
+        const startTime = performance.now();
+        
+        function easeInOutCubic(t) {
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        function animateScroll(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = easeInOutCubic(progress);
+          
+          window.scrollTo(0, startPosition * (1 - easeProgress));
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          }
+        }
+        
+        requestAnimationFrame(animateScroll);
+      }
+      
+      // Add event listeners
+      window.addEventListener('scroll', handleScroll);
+      backToTopButton.addEventListener('click', scrollToTop);
+      
+      // Add keyboard accessibility
+      backToTopButton.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          scrollToTop();
+        }
+      });
+      
+      // Initial check for scroll position
+      handleScroll();
     });
