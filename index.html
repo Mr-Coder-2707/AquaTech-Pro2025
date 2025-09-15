@@ -100,13 +100,7 @@
     <img src="img/icon1.png" alt="Logo">
     <h1>AquaTech Pro</h1>
     <p>سباكة احترافية</p>
-    <div class="spinner"></div>
     <p>جاري تحميل الموقع...</p>
-    <div class="loading-dots">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
     <div class="progress-container">
       <div class="progress-bar" id="progress-bar"></div>
     </div>
@@ -127,6 +121,10 @@
       <a href="index.html" class="nav-link active">🏪 المتجر</a>
       <a href="about.html" class="nav-link">👥 من نحن</a>
       <a href="terms.html" class="nav-link">📋 الشروط والأحكام</a>
+      <button id="navbar-cart-btn" class="nav-cart-btn">
+        <span class="nav-cart-icon">🛒</span>
+        <span class="nav-cart-badge" id="nav-cart-badge">0</span>
+      </button>
     </div>
   </nav>
 
@@ -149,105 +147,6 @@
 
   <main>
     <section class="grid" id="products"></section>
-
-    <section class="cart" aria-labelledby="cart-title">
-      <div class="cart-header">
-        <h2 id="cart-title">
-          سلة التسوق 
-          <span class="cart-counter" id="cart-counter" style="display:none">0</span>
-        </h2>
-        <button class="btn secondary" id="clear-cart" style="display:none">مسح السلة</button>
-      </div>
-      
-      <div class="cart-items" id="cart-items"></div>
-      
-      <div class="empty-cart" id="cart-empty">
-        <div class="empty-cart-icon">�️</div>
-        <div>سلة التسوق فارغة</div>
-        <div class="muted" style="font-size:14px; margin-top:4px">ابدأ بإضافة منتجات السباكة التي تحتاجها!</div>
-      </div>
-
-      <div class="cart-summary" id="cart-summary" style="display:none">
-        <div class="summary-row">
-          <span class="summary-label">عدد المنتجات:</span>
-          <span class="summary-value" id="items-count">0</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">المجموع الفرعي:</span>
-          <span class="summary-value" id="subtotal">0.00</span>
-        </div>
-        <div class="summary-row total">
-          <span class="summary-label">الإجمالي:</span>
-          <span class="summary-value total" id="total-amount">0.00</span>
-        </div>
-        
-        <div class="checkout-bar">
-          <button class="btn" id="checkout">الدفع عبر الواتساب</button>
-        </div>
-      </div>
-
-      <div class="form" id="checkout-form" style="display:none">
-        <div class="field">
-          <label for="cust-name">الاسم الكامل</label>
-          <input id="cust-name" placeholder="مثال: أحمد علي" />
-        </div>
-        <div class="field">
-          <label for="cust-phone">رقم الهاتف</label>
-          <input id="cust-phone" placeholder="مثال: 201001234567" />
-        </div>
-        <div class="field">
-          <label for="cust-email">البريد الإلكتروني</label>
-          <input id="cust-email" type="email" placeholder="مثال: name@example.com" />
-        </div>
-        <div class="field">
-          <label for="cust-location">الموقع/العنوان</label>
-          <input id="cust-location" placeholder="القلج /البلد /الشارع الكبير" />
-        </div>
-        <div class="error" id="form-error"></div>
-        <div class="ok" id="form-ok"></div>
-        
-        <!-- Warning message before checkout -->
-        <div class="warning-box">
-          <div class="warning-header">
-            <span class="warning-icon">⚠️</span>
-            <strong>تنبيه مهم قبل إتمام الطلب</strong>
-          </div>
-          <ul class="warning-list">
-            <li><strong>👁️ معاينة المنتجات:</strong> يرجى استخدام زر "👁️" لمعاينة كل منتج بالتفصيل قبل إضافته للسلة</li>
-            <li><strong>🔄 سياسة الاستبدال:</strong> يحق للعميل استبدال المنتج خلال 7 أيام من تاريخ الاستلام بشرط عدم الاستخدام</li>
-            <li><strong>📦 فحص المنتج:</strong> يجب فحص المنتج عند الاستلام والتأكد من سلامته قبل التوقيع</li>
-            <li><strong>🚚 رسوم التوصيل من 10ج الي 20ج لاي مكان داخل القلج رسوم الإرجاع:</strong> العميل يتحمل رسوم الشحن في حالة الإرجاع إذا لم يكن هناك عيب بالمنتج</li>
-
-          </ul>
-          <div class="warning-footer">
-            💡 للاستفسارات حول سياسة الإرجاع والاستبدال، يرجى التواصل معنا قبل إتمام الطلب
-          </div>
-        </div>
-
-        <!-- Terms and Conditions Agreement -->
-        <div class="terms-agreement">
-          <div class="terms-checkbox">
-            <input type="checkbox" id="terms-agree" required>
-            <label for="terms-agree" class="terms-text">
-              <strong>✅ أوافق على جميع السياسات والشروط</strong><br>
-              في حال إتمام عملية الشراء أنت كده موافق على كل السياسات وحقوق الإرجاع والاستبدال وتطبق الشروط والأحكام
-            </label>
-          </div>
-          <div class="terms-notice">
-            ⚖️ بالضغط على "إرسال الطلب" تؤكد موافقتك على جميع ما ورد أعلاه وتصبح ملزماً قانونياً بهذه الشروط
-          </div>
-        </div>
-        
-        <div class="btn-actions">
-          <button class="btn" id="send-whatsapp">إرسال الطلب عبر الواتساب</button>
-          <button class="btn secondary" id="test-whatsapp">اختبار الواتساب</button>
-          <button class="btn secondary" id="cancel-checkout" type="button">إلغاء</button>
-        </div>
-        <div class="form-small-text">
-          ملاحظة: على الهاتف المحمول، سيتم فتح تطبيق الواتساب مباشرة. على سطح المكتب، سيتم فتح واتساب ويب في تبويب جديد. الصور لا يمكن إرفاقها تلقائياً؛ روابط الصور مضمنة في الرسالة.
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Product Preview Modal -->
@@ -283,9 +182,108 @@
     <span class="floating-cart-badge" id="floating-cart-badge">0</span>
   </button>
 
+  <!-- Cart Sidebar Overlay -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  
+  <!-- Sidebar Cart -->
+  <div class="sidebar-cart" id="sidebar-cart">
+    <button class="cart-close-btn" id="close-cart" type="button">&times;</button>
+    <h2>سلة التسوق <span class="cart-counter" id="sidebar-cart-counter">0</span></h2>
+    <button class="btn secondary sidebar-clear-cart" id="sidebar-clear-cart" type="button">مسح السلة</button>
+    
+    <div class="cart-items" id="sidebar-cart-items"></div>
+    
+    <div class="empty-cart" id="sidebar-cart-empty">
+      <div class="empty-cart-icon">🛒</div>
+      <div>سلة التسوق فارغة</div>
+      <div class="muted">ابدأ بإضافة منتجات السباكة التي تحتاجها!</div>
+    </div>
+
+    <div class="cart-summary" id="sidebar-cart-summary">
+      <div class="summary-row">
+        <span class="summary-label">عدد المنتجات:</span>
+        <span class="summary-value" id="sidebar-items-count">0</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">المجموع الفرعي:</span>
+        <span class="summary-value" id="sidebar-subtotal">0.00</span>
+      </div>
+      <div class="summary-row total">
+        <span class="summary-label">الإجمالي:</span>
+        <span class="summary-value total" id="sidebar-total-amount">0.00</span>
+      </div>
+      
+      <div class="checkout-bar">
+        <button class="btn" id="sidebar-checkout" type="button">الدفع عبر الواتساب</button>
+      </div>
+    </div>
+    
+    <!-- Checkout Form in Sidebar -->
+    <div class="form" id="sidebar-checkout-form">
+      <div class="field">
+        <label for="sidebar-cust-name">الاسم الكامل</label>
+        <input id="sidebar-cust-name" type="text" autocomplete="name" placeholder="مثال: أحمد علي">
+      </div>
+      <div class="field">
+        <label for="sidebar-cust-phone">رقم الهاتف</label>
+        <input id="sidebar-cust-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="مثال: 201001234567">
+      </div>
+      <div class="field">
+        <label for="sidebar-cust-email">البريد الإلكتروني</label>
+        <input id="sidebar-cust-email" type="email" autocomplete="email" inputmode="email" placeholder="مثال: name@example.com">
+      </div>
+      <div class="field">
+        <label for="sidebar-cust-location">الموقع/العنوان</label>
+        <input id="sidebar-cust-location" type="text" autocomplete="address-line1" placeholder="القلج /البلد /الشارع الكبير">
+      </div>
+      <div class="error" id="sidebar-form-error"></div>
+      <div class="ok" id="sidebar-form-ok"></div>
+      
+      <!-- Warning message before checkout -->
+      <div class="warning-box">
+        <div class="warning-header">
+          <span class="warning-icon">⚠️</span>
+          <strong>تنبيه مهم قبل إتمام الطلب</strong>
+        </div>
+        <ul class="warning-list">
+          <li><strong>👁️ معاينة المنتجات:</strong> يرجى استخدام زر "👁️" لمعاينة كل منتج بالتفصيل قبل إضافته للسلة</li>
+          <li><strong>🔄 سياسة الاستبدال:</strong> يحق للعميل استبدال المنتج خلال 7 أيام من تاريخ الاستلام بشرط عدم الاستخدام</li>
+          <li><strong>📦 فحص المنتج:</strong> يجب فحص المنتج عند الاستلام والتأكد من سلامته قبل التوقيع</li>
+          <li><strong>🚚 رسوم التوصيل من 10ج الي 20ج لاي مكان داخل القلج رسوم الإرجاع:</strong> العميل يتحمل رسوم الشحن في حالة الإرجاع إذا لم يكن هناك عيب بالمنتج</li>
+        </ul>
+        <div class="warning-footer">
+          💡 للاستفسارات حول سياسة الإرجاع والاستبدال، يرجى التواصل معنا قبل إتمام الطلب
+        </div>
+      </div>
+
+      <!-- Terms and Conditions Agreement -->
+      <div class="terms-agreement">
+        <div class="terms-checkbox">
+          <input type="checkbox" id="sidebar-terms-agree" required>
+          <label for="sidebar-terms-agree" class="terms-text">
+            <strong>✅ أوافق على جميع السياسات والشروط</strong><br>
+            في حال إتمام عملية الشراء أنت كده موافق على كل السياسات وحقوق الإرجاع والاستبدال وتطبق الشروط والأحكام
+          </label>
+        </div>
+        <div class="terms-notice">
+          ⚖️ بالضغط على "إرسال الطلب" تؤكد موافقتك على جميع ما ورد أعلاه وتصبح ملزماً قانونياً بهذه الشروط
+        </div>
+      </div>
+      
+      <div class="btn-actions">
+        <button class="btn" id="sidebar-send-whatsapp" type="button">إرسال الطلب عبر الواتساب</button>
+        <button class="btn secondary" id="sidebar-test-whatsapp" type="button">اختبار الواتساب</button>
+        <button class="btn secondary" id="sidebar-cancel-checkout" type="button">إلغاء</button>
+      </div>
+      <div class="form-small-text">
+        ملاحظة: سيتم فتح الواتساب في نافذة منفصلة أو تبويب جديد. على الهاتف المحمول، سيتم تشغيل تطبيق الواتساب. الصور لا يمكن إرفاقها تلقائياً؛ روابط الصور مضمنة في الرسالة.
+      </div>
+    </div>
+  </div>
+
   <footer>
     © <span id="year"></span> AquaTech Pro - سباكة احترافية. خدمات سباكة متميزة وتوصيل سريع.
   </footer>
-  <script src="script.js"></script>
+  <script src="script-updated.js"></script>
 </body>
 </html>

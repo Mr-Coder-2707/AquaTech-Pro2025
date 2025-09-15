@@ -49,6 +49,7 @@
     let searchTerm = '';
     let currentPreviewProduct = null;
     let orderSent = false; // Flag to track if an order was just completed
+    let customerInfo = {}; // Store customer information
 
     // ======= HELPERS =======
     const fmt = (n) => new Intl.NumberFormat(undefined, { style: 'currency', currency: CURRENCY, maximumFractionDigits: 2 }).format(n);
@@ -87,6 +88,50 @@
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
         cart.clear(); // Clear cart if there's an error loading
+      }
+    }
+
+    // Load saved customer info from localStorage
+    function loadCustomerInfo() {
+      try {
+        const savedInfo = localStorage.getItem('aquatech_customer');
+        if (savedInfo) {
+          customerInfo = JSON.parse(savedInfo);
+          console.log('Customer information loaded from localStorage:', customerInfo);
+        }
+      } catch (error) {
+        console.error('Error loading customer info from localStorage:', error);
+        customerInfo = {}; // Reset if there's an error
+      }
+    }
+
+    // Save customer info to localStorage
+    function saveCustomerInfo(info) {
+      try {
+        localStorage.setItem('aquatech_customer', JSON.stringify(info));
+        console.log('Customer information saved to localStorage:', info);
+        customerInfo = info;
+      } catch (error) {
+        console.error('Error saving customer info to localStorage:', error);
+      }
+    }
+
+    // Fill form fields with saved customer info
+    function fillCustomerFormFields() {
+      if (Object.keys(customerInfo).length > 0) {
+        // Fill sidebar form fields
+        if (customerInfo.name) {
+          document.getElementById('sidebar-cust-name').value = customerInfo.name;
+        }
+        if (customerInfo.phone) {
+          document.getElementById('sidebar-cust-phone').value = customerInfo.phone;
+        }
+        if (customerInfo.email) {
+          document.getElementById('sidebar-cust-email').value = customerInfo.email;
+        }
+        if (customerInfo.location) {
+          document.getElementById('sidebar-cust-location').value = customerInfo.location;
+        }
       }
     }
 
@@ -177,35 +222,20 @@
     }
 
     function renderCart() {
-      // Main cart in the page
-      const container = document.getElementById('cart-items');
-      const empty = document.getElementById('cart-empty');
-      const summary = document.getElementById('cart-summary');
-      const counter = document.getElementById('cart-counter');
-      const clearBtn = document.getElementById('clear-cart');
-      
-      // Sidebar cart
+      // Only render sidebar cart since main cart has been removed
       const sidebarContainer = document.getElementById('sidebar-cart-items');
       const sidebarEmpty = document.getElementById('sidebar-cart-empty');
       const sidebarSummary = document.getElementById('sidebar-cart-summary');
       const sidebarCounter = document.getElementById('sidebar-cart-counter');
       const navCartBadge = document.getElementById('nav-cart-badge');
       
-      // Clear both cart containers
-      container.innerHTML = '';
+      // Clear cart container
       sidebarContainer.innerHTML = '';
       
       let subtotal = 0;
       let itemsCount = 0;
 
       if (cart.size === 0) {
-        // Main cart
-        empty.style.display = 'block';
-        summary.style.display = 'none';
-        counter.style.display = 'none';
-        clearBtn.style.display = 'none';
-        document.getElementById('checkout-form').style.display = 'none';
-        
         // Sidebar cart
         sidebarEmpty.style.display = 'block';
         sidebarSummary.style.display = 'none';
@@ -219,41 +249,17 @@
         return;
       }
       
-      // Main cart display settings
-      empty.style.display = 'none';
-      summary.style.display = 'block';
-      counter.style.display = 'inline-block';
-      clearBtn.style.display = 'inline-block';
-      
       // Sidebar cart display settings
       sidebarEmpty.style.display = 'none';
       sidebarSummary.style.display = 'block';
       navCartBadge.style.display = 'flex';
       document.getElementById('sidebar-clear-cart').style.display = 'inline-block';
 
-      // Loop through cart items to create both displays
+      // Loop through cart items to create display
       cart.forEach(({product, qty}) => {
         const line = product.price * qty;
         subtotal += line;
         itemsCount += qty;
-        
-        // Create item for main cart
-        const item = document.createElement('div');
-        item.className = 'cart-item';
-        item.innerHTML = `
-          <img src="${product.img}" alt="${product.name}" loading="lazy" style="width: 60px; height: 60px; object-fit: cover;">
-          <div class="cart-item-info">
-            <div class="cart-item-name">${product.name}</div>
-            <div class="cart-item-price">${fmt(product.price)} × ${qty} = ${fmt(line)}</div>
-          </div>
-          <div class="cart-qty-controls">
-            <button class="minus" data-id="${product.id}">−</button>
-            <div class="cart-qty-display">${qty}</div>
-            <button class="plus" data-id="${product.id}">+</button>
-          </div>
-          <button class="btn danger remove" data-id="${product.id}">حذف</button>
-        `;
-        container.appendChild(item);
         
         // Create item for sidebar cart
         const sidebarItem = document.createElement('div');
@@ -274,12 +280,6 @@
         sidebarContainer.appendChild(sidebarItem);
       });
 
-      // Update all counters and summaries
-      counter.textContent = itemsCount;
-      document.getElementById('items-count').textContent = itemsCount;
-      document.getElementById('subtotal').textContent = fmt(subtotal);
-      document.getElementById('total-amount').textContent = fmt(subtotal);
-      
       // Update sidebar counters and summaries
       sidebarCounter.textContent = itemsCount;
       navCartBadge.textContent = itemsCount;
@@ -292,34 +292,6 @@
 
       // حفظ السلة في localStorage
       saveCart();
-
-      // Main cart event listeners
-      container.querySelectorAll('.minus').forEach(b=>{
-        b.addEventListener('click', ()=>{
-          const id = b.getAttribute('data-id');
-          const entry = cart.get(id);
-          if (!entry) return;
-          entry.qty = Math.max(1, entry.qty - 1);
-          cart.set(id, entry);
-          renderCart();
-        });
-      });
-      container.querySelectorAll('.plus').forEach(b=>{
-        b.addEventListener('click', ()=>{
-          const id = b.getAttribute('data-id');
-          const entry = cart.get(id);
-          if (!entry) return;
-          entry.qty += 1;
-          cart.set(id, entry);
-          renderCart();
-        });
-      });
-      container.querySelectorAll('.remove').forEach(b=>{
-        b.addEventListener('click', ()=>{
-          cart.delete(b.getAttribute('data-id'));
-          renderCart();
-        });
-      });
       
       // Sidebar cart event listeners
       sidebarContainer.querySelectorAll('.sidebar-minus').forEach(b=>{
@@ -350,17 +322,20 @@
       });
     }
 
-    function showCheckoutForm(show=true, isSidebar=false){
-      const formId = isSidebar ? 'sidebar-checkout-form' : 'checkout-form';
-      const errorId = isSidebar ? 'sidebar-form-error' : 'form-error';
-      const okId = isSidebar ? 'sidebar-form-ok' : 'form-ok';
+    function showCheckoutForm(show=true, isSidebar=true){ // Always use sidebar since main cart removed
+      const formId = 'sidebar-checkout-form';
+      const errorId = 'sidebar-form-error';
+      const okId = 'sidebar-form-ok';
       
       document.getElementById(formId).style.display = show ? 'block' : 'none';
       document.getElementById(errorId).style.display = 'none';
       document.getElementById(okId).style.display = 'none';
       
-      // If showing in sidebar and form is open, scroll to it
-      if (show && isSidebar) {
+      // If showing the form, fill with saved customer info
+      if (show) {
+        fillCustomerFormFields();
+        
+        // Scroll to form
         setTimeout(() => {
           document.getElementById(formId).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
@@ -390,13 +365,13 @@
       currentPreviewProduct = null;
     }
 
-    function validateForm(isSidebar=false) {
-      // Get the appropriate element IDs based on whether we're in sidebar or main form
-      const nameId = isSidebar ? 'sidebar-cust-name' : 'cust-name';
-      const phoneId = isSidebar ? 'sidebar-cust-phone' : 'cust-phone';
-      const emailId = isSidebar ? 'sidebar-cust-email' : 'cust-email';
-      const locationId = isSidebar ? 'sidebar-cust-location' : 'cust-location';
-      const termsId = isSidebar ? 'sidebar-terms-agree' : 'terms-agree';
+    function validateForm(isSidebar=true) { // Always use sidebar validation since main cart removed
+      // Get the appropriate element IDs based on whether we're in sidebar
+      const nameId = 'sidebar-cust-name';
+      const phoneId = 'sidebar-cust-phone';
+      const emailId = 'sidebar-cust-email';
+      const locationId = 'sidebar-cust-location';
+      const termsId = 'sidebar-terms-agree';
       
       const name = document.getElementById(nameId).value.trim();
       const phone = document.getElementById(phoneId).value.trim();
@@ -423,6 +398,16 @@
 
       if (!termsAgreed) {
         errors.push('يجب الموافقة على الشروط والأحكام قبل إتمام الطلب.');
+      }
+
+      // If form is valid, save customer information
+      if (errors.length === 0) {
+        saveCustomerInfo({
+          name,
+          phone: cleanPhone,
+          email,
+          location
+        });
       }
 
       return { valid: errors.length === 0, errors, name, phone: cleanPhone, email, location, termsAgreed };
@@ -524,11 +509,6 @@
         floatingBadge.style.display = 'none';
       }
     }
-
-    function scrollToCart() {
-      const cartSection = document.querySelector('.cart');
-      cartSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
     
     function toggleSidebarCart() {
       const sidebarCart = document.getElementById('sidebar-cart');
@@ -557,6 +537,56 @@
       document.getElementById('sidebar-checkout-form').style.display = 'none';
       document.getElementById('sidebar-form-error').style.display = 'none';
       document.getElementById('sidebar-form-ok').style.display = 'none';
+    }
+
+    // ======= Auto-completion & Form Enhancement =======
+    function setupFormAutocompletion() {
+      // Set up input fields with proper autocomplete attributes
+      const custNameInput = document.getElementById('sidebar-cust-name');
+      const custPhoneInput = document.getElementById('sidebar-cust-phone');
+      const custEmailInput = document.getElementById('sidebar-cust-email');
+      const custLocationInput = document.getElementById('sidebar-cust-location');
+      
+      if (custNameInput) {
+        custNameInput.setAttribute('autocomplete', 'name');
+        // Save name as it's typed
+        custNameInput.addEventListener('change', () => {
+          if (!customerInfo) customerInfo = {};
+          customerInfo.name = custNameInput.value.trim();
+          saveCustomerInfo(customerInfo);
+        });
+      }
+      
+      if (custPhoneInput) {
+        custPhoneInput.setAttribute('autocomplete', 'tel');
+        custPhoneInput.setAttribute('inputmode', 'tel');
+        // Save phone as it's typed
+        custPhoneInput.addEventListener('change', () => {
+          if (!customerInfo) customerInfo = {};
+          customerInfo.phone = custPhoneInput.value.trim();
+          saveCustomerInfo(customerInfo);
+        });
+      }
+      
+      if (custEmailInput) {
+        custEmailInput.setAttribute('autocomplete', 'email');
+        // Save email as it's typed
+        custEmailInput.addEventListener('change', () => {
+          if (!customerInfo) customerInfo = {};
+          customerInfo.email = custEmailInput.value.trim();
+          saveCustomerInfo(customerInfo);
+        });
+      }
+      
+      if (custLocationInput) {
+        custLocationInput.setAttribute('autocomplete', 'address-line1');
+        // Save location as it's typed
+        custLocationInput.addEventListener('change', () => {
+          if (!customerInfo) customerInfo = {};
+          customerInfo.location = custLocationInput.value.trim();
+          saveCustomerInfo(customerInfo);
+        });
+      }
     }
 
     // ======= EVENTS =======
@@ -646,6 +676,7 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeSidebarCart();
+        hideProductPreview();
       }
     });
 
@@ -663,21 +694,6 @@
         currentFilter = tag.getAttribute('data-category');
         renderProducts();
       });
-    });
-
-    document.getElementById('clear-cart').addEventListener('click', ()=>{
-      cart.clear(); 
-      renderCart(); // This will automatically save the empty cart
-    });
-
-    document.getElementById('checkout').addEventListener('click', ()=>{
-      if (cart.size === 0) return;
-      showCheckoutForm(true);
-      document.getElementById('cust-name').focus();
-    });
-
-    document.getElementById('cancel-checkout').addEventListener('click', ()=>{
-      showCheckoutForm(false);
     });
 
     // Preview modal events
@@ -725,66 +741,6 @@
         btn.textContent = originalText;
         btn.style.background = '';
       }, 1000);
-    });
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        hideProductPreview();
-      }
-    });
-
-    // Test WhatsApp button
-    document.getElementById('test-whatsapp').addEventListener('click', ()=>{
-      const testMessage = '🔧 مرحبا! هذه رسالة اختبار من AquaTech Pro - سباكة احترافية. ✅\n\nنحن جاهزون لخدمتكم!';
-      console.log('=== WHATSAPP TEST ===');
-      console.log('Testing WhatsApp with number:', STORE_WHATSAPP_NUMBER);
-      console.log('Test message:', testMessage);
-      console.log('User agent:', navigator.userAgent);
-      
-      try {
-        openWhatsapp(testMessage, STORE_WHATSAPP_NUMBER);
-        console.log('openWhatsapp function called successfully');
-      } catch (error) {
-        console.error('Error in test:', error);
-        alert('خطأ في اختبار الواتساب: ' + error.message);
-      }
-    });
-
-    document.getElementById('send-whatsapp').addEventListener('click', ()=>{
-      const { valid, errors, name, phone, email, location } = validateForm();
-      const errBox = document.getElementById('form-error');
-      const okBox  = document.getElementById('form-ok');
-
-      if (!valid) {
-        errBox.textContent = errors.join(' ');
-        errBox.style.display = '';
-        okBox.style.display = 'none';
-        return;
-      }
-
-      const items = Array.from(cart.values());
-      const msg = buildWhatsappMessage({name, phone, email, location}, items);
-      
-      console.log('Sending WhatsApp message:', msg);
-      console.log('Phone number used:', phone);
-      
-      // Show success message
-      okBox.textContent = 'جاري فتح الواتساب في نافذة جديدة...';
-      okBox.style.display = '';
-      errBox.style.display = 'none';
-
-      // Add small delay to show the message
-      setTimeout(() => {
-        try {
-          openWhatsapp(msg, STORE_WHATSAPP_NUMBER);
-        } catch (error) {
-          console.error('Error in openWhatsapp:', error);
-          errBox.textContent = 'حدث خطأ في فتح الواتساب: ' + error.message;
-          errBox.style.display = '';
-          okBox.style.display = 'none';
-        }
-      }, 500);
     });
 
     // ======= LOADING SCREEN =======
@@ -869,7 +825,7 @@
     // تحديث نص التحميل
     function updateLoadingText(message) {
       const loadingTextElement = document.querySelector('#loading-screen p:last-of-type');
-      if (loadingTextElement && loadingTextElement.previousElementSibling.classList.contains('loading-dots')) {
+      if (loadingTextElement) {
         loadingTextElement.textContent = message || 'جاري تحميل الموقع...';
       }
     }
@@ -937,6 +893,12 @@
       
       // تحميل السلة المحفوظة من localStorage
       loadCart();
+      
+      // Load customer information
+      loadCustomerInfo();
+      
+      // Setup form autocompletion
+      setupFormAutocompletion();
       
       // Check if an order was completed recently
       checkOrderCompletion();
