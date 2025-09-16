@@ -51,82 +51,6 @@
     let orderSent = false; // Flag to track if an order was just completed
     let customerInfo = {}; // Store customer information
 
-    // ======= TERMS VALIDATION ENHANCEMENT =======
-    function updateSendButtonState() {
-      const termsCheckbox = document.getElementById('sidebar-terms-agree');
-      const sendButton = document.getElementById('sidebar-send-whatsapp');
-      const termsContainer = document.querySelector('.terms-agreement');
-      
-      if (!termsCheckbox || !sendButton) return;
-      
-      // Store original button text if not already stored
-      if (!sendButton.dataset.originalText) {
-        sendButton.dataset.originalText = sendButton.textContent;
-      }
-      
-      if (termsCheckbox.checked) {
-        // Terms agreed - enable button
-        sendButton.classList.remove('terms-disabled');
-        sendButton.style.pointerEvents = 'auto';
-        sendButton.style.cursor = 'pointer';
-        sendButton.title = 'إرسال الطلب عبر الواتساب';
-        sendButton.textContent = sendButton.dataset.originalText;
-        termsContainer.classList.remove('terms-highlight');
-      } else {
-        // Terms not agreed - disable button with blur effect
-        sendButton.classList.add('terms-disabled');
-        sendButton.style.pointerEvents = 'none';
-        sendButton.style.cursor = 'not-allowed';
-        sendButton.title = 'يجب الموافقة على الشروط والأحكام أولاً قبل إرسال الطلب';
-        sendButton.textContent = '⚠️ وافق على الشروط أولاً';
-      }
-    }
-
-    function highlightTermsSection() {
-      const termsContainer = document.querySelector('.terms-agreement');
-      if (termsContainer) {
-        termsContainer.classList.add('terms-highlight');
-        termsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Remove highlight after 3 seconds
-        setTimeout(() => {
-          termsContainer.classList.remove('terms-highlight');
-        }, 3000);
-      }
-    }
-
-    function showTermsValidationError() {
-      // Remove any existing error messages
-      const existingError = document.querySelector('.terms-validation-error');
-      if (existingError) {
-        existingError.remove();
-      }
-      
-      // Create new error message
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'terms-validation-error';
-      errorDiv.innerHTML = `
-        <strong>⚠️ يجب الموافقة على الشروط والأحكام أولاً!</strong><br>
-        يرجى قراءة الشروط والأحكام والموافقة عليها قبل إتمام الطلب
-      `;
-      
-      // Insert error message before the terms agreement section
-      const termsContainer = document.querySelector('.terms-agreement');
-      if (termsContainer) {
-        termsContainer.parentNode.insertBefore(errorDiv, termsContainer);
-        
-        // Highlight terms section
-        highlightTermsSection();
-        
-        // Auto-remove error after 5 seconds
-        setTimeout(() => {
-          if (errorDiv && errorDiv.parentNode) {
-            errorDiv.remove();
-          }
-        }, 5000);
-      }
-    }
-
     // ======= HELPERS =======
     const fmt = (n) => new Intl.NumberFormat(undefined, { style: 'currency', currency: CURRENCY, maximumFractionDigits: 2 }).format(n);
 
@@ -411,11 +335,6 @@
       if (show) {
         fillCustomerFormFields();
         
-        // Initialize the send button state based on terms checkbox
-        setTimeout(() => {
-          updateSendButtonState();
-        }, 100);
-        
         // Scroll to form
         setTimeout(() => {
           document.getElementById(formId).scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -478,9 +397,7 @@
       }
 
       if (!termsAgreed) {
-        errors.push('⚠️ يجب الموافقة على الشروط والأحكام قبل إتمام الطلب. يرجى قراءة الشروط والموافقة عليها أولاً.');
-        // Also highlight the terms section
-        highlightTermsSection();
+        errors.push('يجب الموافقة على الشروط والأحكام قبل إتمام الطلب.');
       }
 
       // If form is valid, save customer information
@@ -639,7 +556,6 @@
       const custPhoneInput = document.getElementById('sidebar-cust-phone');
       const custEmailInput = document.getElementById('sidebar-cust-email');
       const custLocationInput = document.getElementById('sidebar-cust-location');
-      const termsCheckbox = document.getElementById('sidebar-terms-agree');
       
       if (custNameInput) {
         custNameInput.setAttribute('autocomplete', 'name');
@@ -681,25 +597,6 @@
           saveCustomerInfo(customerInfo);
         });
       }
-
-      // Add terms checkbox monitoring
-      if (termsCheckbox) {
-        // Initial state
-        updateSendButtonState();
-        
-        // Monitor checkbox changes
-        termsCheckbox.addEventListener('change', () => {
-          updateSendButtonState();
-          
-          // Remove any existing validation errors when terms are agreed
-          if (termsCheckbox.checked) {
-            const existingError = document.querySelector('.terms-validation-error');
-            if (existingError) {
-              existingError.remove();
-            }
-          }
-        });
-      }
     }
 
     // ======= EVENTS =======
@@ -734,16 +631,7 @@
     });
     
     // Sidebar send WhatsApp button
-    document.getElementById('sidebar-send-whatsapp').addEventListener('click', (e) => {
-      // Prevent default action if terms not agreed
-      const termsCheckbox = document.getElementById('sidebar-terms-agree');
-      if (!termsCheckbox || !termsCheckbox.checked) {
-        e.preventDefault();
-        e.stopPropagation();
-        showTermsValidationError();
-        return false;
-      }
-
+    document.getElementById('sidebar-send-whatsapp').addEventListener('click', () => {
       const { valid, errors, name, phone, email, location } = validateForm(true);
       const errBox = document.getElementById('sidebar-form-error');
       const okBox = document.getElementById('sidebar-form-ok');
@@ -1157,100 +1045,3 @@
       // Initial check for scroll position
       handleScroll();
     });
-
-    // ======= iOS/APPLE ZOOM PREVENTION =======
-    (function() {
-      'use strict';
-      
-      // Detect iOS devices
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-      
-      if (isIOS || isSafari) {
-        console.log('iOS/Safari detected - applying zoom prevention measures');
-        
-        // Prevent zoom on double tap
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-          const now = (new Date()).getTime();
-          if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
-          }
-          lastTouchEnd = now;
-        }, false);
-        
-        // Prevent pinch zoom
-        document.addEventListener('gesturestart', function (e) {
-          e.preventDefault();
-        });
-        
-        document.addEventListener('gesturechange', function (e) {
-          e.preventDefault();
-        });
-        
-        document.addEventListener('gestureend', function (e) {
-          e.preventDefault();
-        });
-        
-        // Additional prevention for wheel zoom
-        document.addEventListener('wheel', function(e) {
-          if (e.ctrlKey) {
-            e.preventDefault();
-          }
-        }, { passive: false });
-        
-        // Force 16px font size on all inputs to prevent zoom
-        function setInputFontSize() {
-          const inputs = document.querySelectorAll('input, select, textarea');
-          inputs.forEach(input => {
-            // Only set font size if it's smaller than 16px or not set
-            const computedStyle = window.getComputedStyle(input);
-            const fontSize = parseFloat(computedStyle.fontSize);
-            
-            if (fontSize < 16) {
-              input.style.fontSize = '16px';
-              input.style.setProperty('font-size', '16px', 'important');
-            }
-          });
-        }
-        
-        // Apply on page load
-        document.addEventListener('DOMContentLoaded', setInputFontSize);
-        
-        // Apply whenever new elements are added
-        const observer = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-              setInputFontSize();
-            }
-          });
-        });
-        
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-        
-        // Additional viewport meta tag enforcement
-        function enforceViewport() {
-          let viewport = document.querySelector('meta[name="viewport"]');
-          if (viewport) {
-            viewport.setAttribute('content', 
-              'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover'
-            );
-          }
-        }
-        
-        enforceViewport();
-        
-        // Prevent zoom on orientation change
-        window.addEventListener('orientationchange', function() {
-          setTimeout(function() {
-            enforceViewport();
-            setInputFontSize();
-          }, 100);
-        });
-        
-        console.log('iOS zoom prevention measures applied successfully');
-      }
-    })();
