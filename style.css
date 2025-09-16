@@ -588,6 +588,36 @@ main{max-width:1100px; margin:0 auto; padding:8px 16px 80px}
   border-top: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Terms validation error styles */
+.terms-agreement.error {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #f87171;
+  animation: shake 0.5s ease-in-out;
+}
+
+.terms-checkbox.error input[type="checkbox"] {
+  outline: 2px solid #f87171;
+  outline-offset: 2px;
+  animation: pulse-red 1s infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes pulse-red {
+  0%, 100% { 
+    outline-color: #f87171;
+    transform: scale(1);
+  }
+  50% { 
+    outline-color: #ef4444;
+    transform: scale(1.05);
+  }
+}
+
 .animate-add{
   animation: addToCart 0.6s ease;
 }

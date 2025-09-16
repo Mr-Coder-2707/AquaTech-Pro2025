@@ -397,7 +397,7 @@
       }
 
       if (!termsAgreed) {
-        errors.push('يجب الموافقة على الشروط والأحكام قبل إتمام الطلب.');
+        errors.push('⚠️ يجب الموافقة على جميع الشروط والأحكام وسياسة الإرجاع والاستبدال قبل إتمام الطلب. يرجى تحديد مربع الموافقة أولاً.');
       }
 
       // If form is valid, save customer information
@@ -463,6 +463,14 @@
     }
     
     function openWhatsapp(message, toNumber) {
+      // Additional validation before opening WhatsApp
+      const termsCheckbox = document.getElementById('sidebar-terms-agree');
+      if (!termsCheckbox || !termsCheckbox.checked) {
+        console.error('Terms not agreed - blocking WhatsApp send');
+        alert('⚠️ يجب الموافقة على الشروط والأحكام قبل إرسال الطلب!');
+        return false;
+      }
+      
       // Clean and format the phone number
       const cleanNumber = toNumber.replace(/\D/g, ''); // Remove non-digits
       
@@ -481,6 +489,7 @@
         
         // Add message to console for debugging
         console.log('WhatsApp opened in new tab');
+        return true;
       } catch (error) {
         console.error('Error opening WhatsApp in new tab:', error);
         
@@ -492,11 +501,13 @@
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           a.click();
+          return true;
         } catch (fallbackError) {
           console.error('Fallback method failed:', fallbackError);
           
           // Final fallback: regular navigation but in new tab if possible
           window.open(url, '_blank');
+          return true;
         }
       }
     }
@@ -556,6 +567,7 @@
       const custPhoneInput = document.getElementById('sidebar-cust-phone');
       const custEmailInput = document.getElementById('sidebar-cust-email');
       const custLocationInput = document.getElementById('sidebar-cust-location');
+      const termsCheckbox = document.getElementById('sidebar-terms-agree');
       
       if (custNameInput) {
         custNameInput.setAttribute('autocomplete', 'name');
@@ -597,6 +609,32 @@
           saveCustomerInfo(customerInfo);
         });
       }
+      
+      // Add event listener for terms checkbox to remove error state when checked
+      if (termsCheckbox) {
+        termsCheckbox.addEventListener('change', () => {
+          if (termsCheckbox.checked) {
+            // Remove error classes when terms are agreed
+            const termsAgreement = document.querySelector('.terms-agreement');
+            const termsCheckboxContainer = document.querySelector('.terms-checkbox');
+            const errBox = document.getElementById('sidebar-form-error');
+            
+            if (termsAgreement) {
+              termsAgreement.classList.remove('error');
+            }
+            if (termsCheckboxContainer) {
+              termsCheckboxContainer.classList.remove('error');
+            }
+            if (errBox && errBox.style.display === 'block') {
+              // Hide error message if it's showing terms error
+              const errorText = errBox.textContent || errBox.innerHTML;
+              if (errorText.includes('الموافقة على الشروط') || errorText.includes('الشروط والأحكام')) {
+                errBox.style.display = 'none';
+              }
+            }
+          }
+        });
+      }
     }
 
     // ======= EVENTS =======
@@ -632,14 +670,57 @@
     
     // Sidebar send WhatsApp button
     document.getElementById('sidebar-send-whatsapp').addEventListener('click', () => {
-      const { valid, errors, name, phone, email, location } = validateForm(true);
+      const { valid, errors, name, phone, email, location, termsAgreed } = validateForm(true);
       const errBox = document.getElementById('sidebar-form-error');
       const okBox = document.getElementById('sidebar-form-ok');
+      const termsCheckbox = document.getElementById('sidebar-terms-agree');
 
       if (!valid) {
-        errBox.textContent = errors.join(' ');
-        errBox.style.display = 'block';
+        // Clear any previous success messages
         okBox.style.display = 'none';
+        
+        // Show error messages with enhanced styling
+        errBox.innerHTML = `
+          <div style="background: #fee; border: 2px solid #f87171; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+            <div style="color: #dc2626; font-weight: bold; font-size: 16px; margin-bottom: 8px;">
+              ❌ لا يمكن إرسال الطلب - يرجى إصلاح الأخطاء التالية:
+            </div>
+            <ul style="margin: 0; padding-right: 20px; color: #991b1b;">
+              ${errors.map(error => `<li style="margin-bottom: 4px;">${error}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+        errBox.style.display = 'block';
+        
+        // Add visual feedback to terms checkbox if it's not checked
+        if (!termsAgreed) {
+          const termsAgreement = document.querySelector('.terms-agreement');
+          const termsCheckboxContainer = document.querySelector('.terms-checkbox');
+          
+          // Add error classes
+          if (termsAgreement) {
+            termsAgreement.classList.add('error');
+          }
+          if (termsCheckboxContainer) {
+            termsCheckboxContainer.classList.add('error');
+          }
+          
+          // Scroll to the terms checkbox
+          setTimeout(() => {
+            termsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 100);
+          
+          // Remove visual feedback after 5 seconds
+          setTimeout(() => {
+            if (termsAgreement) {
+              termsAgreement.classList.remove('error');
+            }
+            if (termsCheckboxContainer) {
+              termsCheckboxContainer.classList.remove('error');
+            }
+          }, 5000);
+        }
+        
         return;
       }
 
