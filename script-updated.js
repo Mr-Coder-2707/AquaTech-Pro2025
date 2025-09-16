@@ -810,8 +810,16 @@
         
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-          document.body.style.overflow = 'auto'; // إعادة تفعيل التمرير
-          document.body.classList.add('loaded'); // إضافة class للـ body
+          // فرض إعادة تفعيل التمرير بطرق متعددة
+          document.body.style.overflow = 'auto';
+          document.body.style.overflowX = 'hidden';
+          document.body.style.overflowY = 'auto';
+          document.body.classList.add('loaded');
+          
+          // تأكيد إضافي لإعادة تفعيل التمرير
+          document.documentElement.style.overflow = 'auto';
+          
+          console.log('تم إعادة تفعيل التمرير بنجاح');
           
           // إضافة تأثير انطلاق لطيف للمحتوى
           const header = document.querySelector('header');
@@ -911,6 +919,15 @@
       
       // Check if an order was completed recently
       checkOrderCompletion();
+      
+      // حل إضافي: فرض إعادة تفعيل التمرير بعد 3 ثوانٍ
+      setTimeout(() => {
+        document.body.style.overflow = 'auto';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.overflowY = 'auto';
+        document.documentElement.style.overflow = 'auto';
+        console.log('تم فرض إعادة تفعيل التمرير');
+      }, 3000);
       
       // بدء محاكاة شريط التقدم
       setTimeout(() => {

@@ -290,5 +290,26 @@
     © <span id="year"></span> AquaTech Pro - سباكة احترافية. خدمات سباكة متميزة وتوصيل سريع.
   </footer>
   <script src="script-updated.js"></script>
+  
+  <!-- إصلاح مشكلة التمرير كحل بديل -->
+  <script>
+    // التأكد من إعادة تفعيل التمرير في جميع الحالات
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        document.body.style.overflow = 'auto';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.overflowY = 'auto';
+        console.log('تم إعادة تفعيل التمرير');
+      }, 2000);
+    });
+    
+    // إعادة تفعيل التمرير فوراً في حالة وجود مشكلة
+    setTimeout(() => {
+      document.body.style.overflow = 'auto';
+      document.body.style.overflowX = 'hidden';
+      document.body.style.overflowY = 'auto';
+      console.log('تم فرض إعادة تفعيل التمرير');
+    }, 5000);
+  </script>
 </body>
 </html>

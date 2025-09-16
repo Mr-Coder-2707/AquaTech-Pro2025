@@ -27,7 +27,8 @@ body{
   background:linear-gradient(180deg,#0b1220, #0f172a 60%, #0b1220);
   color:var(--text);
   direction: rtl;
-  overflow: hidden; /* منع التمرير أثناء التحميل */
+  overflow-x: hidden; /* منع التمرير الأفقي فقط */
+  overflow-y: auto; /* السماح بالتمرير الرأسي دائماً */
 }
 
 body.loaded {
