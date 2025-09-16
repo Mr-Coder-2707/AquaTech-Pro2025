@@ -384,6 +384,7 @@ main{max-width:1100px; margin:0 auto; padding:8px 16px 80px}
   top: 15px;
   padding: 8px 12px;
   font-size: 14px;
+  margin-top: -10px;
 }
 
 /* Sidebar cart form styles */
