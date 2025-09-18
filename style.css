@@ -23,6 +23,7 @@
 
 body{
   margin:0;
+  padding-top: 120px; /* Add space for fixed header */
   font-family:'Segoe UI',Tahoma,Arial,Helvetica,sans-serif;
   background:linear-gradient(180deg,#0b1220, #0f172a 60%, #0b1220);
   color:var(--text);
@@ -35,13 +36,28 @@ body.loaded {
   overflow: auto; /* إعادة تفعيل التمرير بعد التحميل */
 }
 
-header{
+header, .navbar{
   padding:24px 16px;
   max-width:1100px;
   margin-inline:auto;
   display:flex; gap:16px; align-items:center; justify-content:space-between;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(11, 18, 32, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+header.scrolled, .navbar.scrolled {
+  padding: 16px;
+  background: rgba(11, 18, 32, 0.95);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
 .brand{display:flex; align-items:center; gap:12px}
@@ -296,6 +312,7 @@ main{max-width:1100px; margin:0 auto; padding:8px 16px 80px}
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999;
+  -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   display: none;
 }

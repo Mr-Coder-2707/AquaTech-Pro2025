@@ -1074,7 +1074,22 @@
       function handleScroll() {
         const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         const triggerHeight = 300; // Show button after scrolling 300px
+        const navbar = document.querySelector('.navbar');
         
+        // Handle navbar scroll effect
+        if (scrollPosition > 100) {
+          if (navbar && !navbar.classList.contains('scrolled')) {
+            navbar.classList.add('scrolled');
+            console.log('Added scrolled class to navbar');
+          }
+        } else {
+          if (navbar && navbar.classList.contains('scrolled')) {
+            navbar.classList.remove('scrolled');
+            console.log('Removed scrolled class from navbar');
+          }
+        }
+        
+        // Handle back to top button
         if (scrollPosition > triggerHeight) {
           if (!backToTopButton.classList.contains('visible')) {
             backToTopButton.classList.add('visible');
