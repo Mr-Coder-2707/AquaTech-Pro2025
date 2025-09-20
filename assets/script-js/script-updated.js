@@ -378,10 +378,6 @@
     window.updateOpenGraphTags = updateOpenGraphTags;
     
     window.showInstagramTip = function() {
-      showShareNotification('💡 للانستقرام: تم نسخ النص! افتح الانستقرام والصق في منشور جديد، ثم أضف الصورة يدوياً', 'info');
-    };
-    
-    window.showInstagramTip = function() {
       showShareNotification('📷 للمشاركة على انستقرام: تم نسخ النص، الآن افتح انستقرام وقم بلصق النص في منشور جديد أو ستوري', 'info');
     };
 
