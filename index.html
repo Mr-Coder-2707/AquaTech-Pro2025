@@ -12,22 +12,25 @@
   <meta name="geo.region" content="EG">
   <meta name="geo.country" content="Egypt">
   <link rel="icon" href="img/icon1.png">
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="AquaTech Pro - سباكة احترافية عبر الواتساب">
-  <meta property="og:description" content="أفضل متجر لأدوات ومعدات السباكة في مصر. خدمات سباكة احترافية، توصيل سريع، ضمان شامل">
-  <meta property="og:image" content="https://aquatech-pro-elkhwass.netlify.app/img/icon.png">
-  <meta property="og:url" content="https://aquatech-pro-elkhwass.netlify.app/">
-  <meta property="og:type" content="website">
-  <meta property="og:image:alt" content="شعار AquaTech Pro">
+  <!-- Open Graph Meta Tags - Dynamic -->
+  <meta id="og-title" property="og:title" content="AquaTech Pro - سباكة احترافية عبر الواتساب">
+  <meta id="og-description" property="og:description" content="أفضل متجر لأدوات ومعدات السباكة في مصر. خدمات سباكة احترافية، توصيل سريع، ضمان شامل">
+  <meta id="og-image" property="og:image" content="https://aquatech-pro-elkhwass.netlify.app/img/icon.png">
+  <meta id="og-url" property="og:url" content="https://aquatech-pro-elkhwass.netlify.app/">
+  <meta id="og-type" property="og:type" content="website">
+  <meta id="og-image-alt" property="og:image:alt" content="شعار AquaTech Pro">
   <meta property="og:site_name" content="AquaTech Pro">
   <meta property="og:locale" content="ar_EG">
   <meta property="og:locale:alternate" content="en_US">
+  <meta id="og-image-width" property="og:image:width" content="1200">
+  <meta id="og-image-height" property="og:image:height" content="630">
+  <meta id="og-image-type" property="og:image:type" content="image/png">
   
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AquaTech Pro - سباكة احترافية عبر الواتساب">
-  <meta name="twitter:description" content="أفضل متجر لأدوات ومعدات السباكة في مصر">
-  <meta name="twitter:image" content="https://aquatech-pro-elkhwass.netlify.app/img/icon.png">
+  <!-- Twitter Card Meta Tags - Dynamic -->
+  <meta id="twitter-card" name="twitter:card" content="summary_large_image">
+  <meta id="twitter-title" name="twitter:title" content="AquaTech Pro - سباكة احترافية عبر الواتساب">
+  <meta id="twitter-description" name="twitter:description" content="أفضل متجر لأدوات ومعدات السباكة في مصر">
+  <meta id="twitter-image" name="twitter:image" content="https://aquatech-pro-elkhwass.netlify.app/img/icon.png">
   <meta name="twitter:creator" content="@AquaTechPro">
   
   <!-- Schema.org Structured Data -->
@@ -89,7 +92,7 @@
   <link rel="canonical" href="https://aquatech-pro-elkhwass.netlify.app/">
   
   <!-- External CSS -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/style-css/style.css">
   
   <!-- Google Fonts (if needed) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,6 +175,9 @@
             <button type="button" id="preview-plus">+</button>
           </div>
           <button class="btn" id="preview-add-to-cart">أضف للسلة</button>
+          <button class="btn share" id="preview-share">📤 مشاركة</button>
+          <button class="btn" id="preview-add-to-cart">أضف للسلة</button>
+
         </div>
       </div>
     </div>
@@ -288,7 +294,7 @@
   <footer>
     © <span id="year"></span> AquaTech Pro - سباكة احترافية. خدمات سباكة متميزة وتوصيل سريع.
   </footer>
-  <script src="script-updated.js"></script>
+  <script src="assets/script-js/script-updated.js"></script>
   
   <!-- إصلاح مشكلة التمرير كحل بديل -->
   <script>

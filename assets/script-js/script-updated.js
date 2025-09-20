@@ -13,7 +13,7 @@
     async function loadProducts() {
       try {
         console.log('Loading products from JSON file...');
-        const response = await fetch('./products-data.json');
+        const response = await fetch('./assets/products-db/products-data.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -53,6 +53,397 @@
 
     // ======= HELPERS =======
     const fmt = (n) => new Intl.NumberFormat(undefined, { style: 'currency', currency: CURRENCY, maximumFractionDigits: 2 }).format(n);
+
+    // ======= DYNAMIC OPEN GRAPH TAGS =======
+    function updateOpenGraphTags(product) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      
+      // Convert relative image path to absolute URL
+      let productImageUrl;
+      if (product.img.startsWith('./')) {
+        // Remove ./ and add the base URL
+        productImageUrl = `${window.location.origin}/${product.img.substring(2)}`;
+      } else if (product.img.startsWith('/')) {
+        // Add base URL for absolute paths
+        productImageUrl = `${window.location.origin}${product.img}`;
+      } else if (product.img.startsWith('http')) {
+        // Already a full URL
+        productImageUrl = product.img;
+      } else {
+        // Relative path without ./
+        productImageUrl = `${window.location.origin}/${product.img}`;
+      }
+      
+      console.log('Product image URL:', productImageUrl); // For debugging
+      
+      // Update meta tags
+      const metaTags = {
+        'og-title': `${product.name} - AquaTech Pro`,
+        'og-description': `${product.description} - السعر: ${fmt(product.price)} - من متجر AquaTech Pro للسباكة`,
+        'og-image': productImageUrl,
+        'og-url': generateProductShareUrl(product.id),
+        'og-type': 'product',
+        'og-image-alt': product.name,
+        'twitter-title': `${product.name} - AquaTech Pro`,
+        'twitter-description': `${product.description} - السعر: ${fmt(product.price)}`,
+        'twitter-image': productImageUrl
+      };
+
+      // Apply the meta tag updates
+      Object.entries(metaTags).forEach(([id, content]) => {
+        const metaTag = document.getElementById(id);
+        if (metaTag) {
+          metaTag.setAttribute('content', content);
+        }
+      });
+
+      // Update page title
+      document.title = `${product.name} - AquaTech Pro`;
+
+      // Add product structured data
+      updateProductStructuredData(product);
+    }
+
+    function resetOpenGraphTags() {
+      const defaultTags = {
+        'og-title': 'AquaTech Pro - سباكة احترافية عبر الواتساب',
+        'og-description': 'أفضل متجر لأدوات ومعدات السباكة في مصر. خدمات سباكة احترافية، توصيل سريع، ضمان شامل',
+        'og-image': 'https://aquatech-pro-elkhwass.netlify.app/img/icon.png',
+        'og-url': window.location.origin + window.location.pathname,
+        'og-type': 'website',
+        'og-image-alt': 'شعار AquaTech Pro',
+        'twitter-title': 'AquaTech Pro - سباكة احترافية عبر الواتساب',
+        'twitter-description': 'أفضل متجر لأدوات ومعدات السباكة في مصر',
+        'twitter-image': 'https://aquatech-pro-elkhwass.netlify.app/img/icon.png'
+      };
+
+      Object.entries(defaultTags).forEach(([id, content]) => {
+        const metaTag = document.getElementById(id);
+        if (metaTag) {
+          metaTag.setAttribute('content', content);
+        }
+      });
+
+      document.title = 'AquaTech Pro - سباكة احترافية عبر الواتساب | متجر أدوات السباكة';
+      removeProductStructuredData();
+    }
+
+    function updateProductStructuredData(product) {
+      // Remove existing product structured data
+      removeProductStructuredData();
+
+      // Convert relative image path to absolute URL (same logic as updateOpenGraphTags)
+      let productImageUrl;
+      if (product.img.startsWith('./')) {
+        productImageUrl = `${window.location.origin}/${product.img.substring(2)}`;
+      } else if (product.img.startsWith('/')) {
+        productImageUrl = `${window.location.origin}${product.img}`;
+      } else if (product.img.startsWith('http')) {
+        productImageUrl = product.img;
+      } else {
+        productImageUrl = `${window.location.origin}/${product.img}`;
+      }
+
+      const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description,
+        "image": [productImageUrl], // Array format for better compatibility
+        "category": product.category,
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "EGP",
+          "availability": "https://schema.org/InStock",
+          "url": generateProductShareUrl(product.id),
+          "seller": {
+            "@type": "Organization",
+            "name": "AquaTech Pro",
+            "url": window.location.origin
+          }
+        },
+        "brand": {
+          "@type": "Brand",
+          "name": "AquaTech Pro"
+        },
+        "url": generateProductShareUrl(product.id),
+        "sku": product.id,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "150"
+        }
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'product-structured-data';
+      script.textContent = JSON.stringify(productSchema);
+      document.head.appendChild(script);
+    }
+
+    function removeProductStructuredData() {
+      const existingScript = document.getElementById('product-structured-data');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    }
+
+    // ======= URL PARAMETER HANDLING =======
+    function getUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return {
+        productId: urlParams.get('product'),
+        shared: urlParams.get('shared') === 'true'
+      };
+    }
+
+    function generateProductShareUrl(productId) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      return `${baseUrl}?product=${productId}&shared=true`;
+    }
+
+    function updateUrlWithProduct(productId) {
+      const newUrl = generateProductShareUrl(productId);
+      window.history.pushState({ productId }, '', newUrl);
+    }
+
+    function clearUrlParams() {
+      const baseUrl = window.location.origin + window.location.pathname;
+      window.history.pushState({}, '', baseUrl);
+    }
+
+    // ======= PRODUCT SHARING FUNCTIONS =======
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        // Fallback for older browsers
+        try {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textArea);
+          return successful;
+        } catch (fallbackErr) {
+          console.error('Failed to copy text to clipboard:', fallbackErr);
+          return false;
+        }
+      }
+    }
+
+    function shareProduct(product) {
+      // Update Open Graph tags for better sharing
+      updateOpenGraphTags(product);
+      
+      const shareUrl = generateProductShareUrl(product.id);
+      const shareText = `تحقق من هذا المنتج الرائع: ${product.name}\nالسعر: ${fmt(product.price)}\nمن متجر AquaTech Pro للسباكة\n${shareUrl}`;
+
+      // Check if Web Share API is supported
+      if (navigator.share) {
+        navigator.share({
+          title: `${product.name} - AquaTech Pro`,
+          text: `تحقق من هذا المنتج: ${product.name} - السعر: ${fmt(product.price)}`,
+          url: shareUrl
+        }).catch(console.error);
+      } else {
+        // Show sharing options modal
+        showSharingModal(product, shareUrl, shareText);
+      }
+    }
+
+    function showSharingModal(product, shareUrl, shareText) {
+      // Remove any existing sharing modal
+      const existing = document.querySelector('.sharing-modal');
+      if (existing) {
+        existing.remove();
+      }
+
+      // Convert relative image path to absolute URL for display
+      let productImageUrl;
+      if (product.img.startsWith('./')) {
+        productImageUrl = `${window.location.origin}/${product.img.substring(2)}`;
+      } else if (product.img.startsWith('/')) {
+        productImageUrl = `${window.location.origin}${product.img}`;
+      } else if (product.img.startsWith('http')) {
+        productImageUrl = product.img;
+      } else {
+        productImageUrl = `${window.location.origin}/${product.img}`;
+      }
+
+      // Create enhanced sharing text with product details and emojis
+      const enhancedShareText = `🔥 ${product.name}
+
+📋 الوصف: ${product.description}
+💰 السعر: ${fmt(product.price)}
+📦 الفئة: ${product.category}
+🏪 من متجر: AquaTech Pro للسباكة
+� للطلب عبر الواتساب: +${STORE_WHATSAPP_NUMBER}
+
+🔗 شاهد المنتج والطلب مباشرة: ${shareUrl}
+
+✨ خدمة عملاء متميزة | 🚚 توصيل سريع | 🔧 ضمان الجودة`;
+
+      // Create sharing modal
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay sharing-modal';
+      modal.innerHTML = `
+        <div class="modal sharing-options-modal">
+          <div class="modal-header">
+            <h3>📤 مشاركة المنتج</h3>
+            <button class="modal-close" onclick="this.closest('.sharing-modal').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="product-share-preview">
+              <img src="${productImageUrl}" alt="${product.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+              <div>
+                <h4>${product.name}</h4>
+                <div class="share-price">${fmt(product.price)}</div>
+                <div class="share-category">${product.category}</div>
+              </div>
+            </div>
+            <div class="share-info-box">
+              <p><strong>💡 نصيحة:</strong> عند المشاركة على مواقع التواصل الاجتماعي، ستظهر صورة المنتج وتفاصيله تلقائياً!</p>
+              <p><strong>🎯 مميز:</strong> الرابط يحتوي على معلومات المنتج ويظهر بشكل احترافي في جميع التطبيقات</p>
+            </div>
+            <div class="share-options">
+              <button class="share-btn whatsapp" onclick="shareToWhatsApp('${encodeURIComponent(enhancedShareText)}')">
+                <span>📱</span>
+                <span>واتساب</span>
+              </button>
+              <button class="share-btn facebook" onclick="shareToFacebook('${encodeURIComponent(shareUrl)}')">
+                <span>📘</span>
+                <span>فيسبوك</span>
+              </button>
+              <button class="share-btn twitter" onclick="shareToTwitter('${encodeURIComponent(enhancedShareText)}')">
+                <span>🐦</span>
+                <span>تويتر</span>
+              </button>
+              <button class="share-btn telegram" onclick="shareToTelegram('${encodeURIComponent(enhancedShareText)}')">
+                <span>✈️</span>
+                <span>تيليجرام</span>
+              </button>
+              <button class="share-btn instagram" onclick="copyProductDetails('${encodeURIComponent(enhancedShareText)}', this); showInstagramTip();">
+                <span>📷</span>
+                <span>انستقرام</span>
+              </button>
+              <button class="share-btn copy" onclick="copyProductLink('${shareUrl}', this)">
+                <span>📋</span>
+                <span>نسخ الرابط</span>
+              </button>
+              <button class="share-btn copy-details" onclick="copyProductDetails('${encodeURIComponent(enhancedShareText)}', this)">
+                <span>📝</span>
+                <span>نسخ التفاصيل</span>
+              </button>
+            </div>
+            <div class="share-url-display">
+              <label>رابط المنتج:</label>
+              <input type="text" value="${shareUrl}" readonly onclick="this.select()">
+            </div>
+            <div class="share-preview-box">
+              <h5>📋 معاينة النص المشارك:</h5>
+              <textarea readonly onclick="this.select()">${enhancedShareText}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      modal.style.display = 'flex';
+    }
+
+    // Global functions for sharing (needed for onclick handlers)
+    window.shareToWhatsApp = function(text) {
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    };
+
+    window.shareToFacebook = function(url) {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    };
+
+    window.shareToTwitter = function(text) {
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    };
+
+    window.shareToTelegram = function(text) {
+      window.open(`https://t.me/share/url?text=${text}`, '_blank');
+    };
+
+    // Make these functions globally accessible
+    window.resetOpenGraphTags = resetOpenGraphTags;
+    window.updateOpenGraphTags = updateOpenGraphTags;
+    
+    window.showInstagramTip = function() {
+      showShareNotification('📷 للمشاركة على انستقرام: تم نسخ النص، الآن افتح انستقرام وقم بلصق النص في منشور جديد أو ستوري', 'info');
+    };
+
+    window.copyProductLink = async function(url, button) {
+      const success = await copyToClipboard(url);
+      if (success) {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<span>✅</span><span>تم النسخ</span>';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+        }, 2000);
+        showShareNotification('تم نسخ رابط المنتج بنجاح! 📋✅');
+      } else {
+        showShareNotification('فشل في نسخ الرابط. يرجى المحاولة مرة أخرى.', 'error');
+      }
+    };
+
+    window.copyProductDetails = async function(encodedText, button) {
+      const text = decodeURIComponent(encodedText);
+      const success = await copyToClipboard(text);
+      if (success) {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<span>✅</span><span>تم النسخ</span>';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+        }, 2000);
+        showShareNotification('تم نسخ تفاصيل المنتج بنجاح! 📝✅');
+      } else {
+        showShareNotification('فشل في نسخ التفاصيل. يرجى المحاولة مرة أخرى.', 'error');
+      }
+    };
+
+    function showShareNotification(message, type = 'success') {
+      // Remove any existing notification
+      const existing = document.querySelector('.share-notification');
+      if (existing) {
+        existing.remove();
+      }
+
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `share-notification ${type}`;
+      
+      // Choose appropriate icon based on type
+      let icon = '✅';
+      if (type === 'error') icon = '❌';
+      if (type === 'info') icon = 'ℹ️';
+      
+      notification.innerHTML = `
+        <div class="notification-content">
+          <span>${icon} ${message}</span>
+          <button class="notification-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
+        </div>
+      `;
+
+      // Add to page
+      document.body.appendChild(notification);
+
+      // Auto-remove after different durations based on type
+      const duration = type === 'info' ? 7000 : 4000;
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, duration);
+    }
 
     function saveCart() {
       try {
@@ -173,7 +564,8 @@
                 <input type="number" min="1" value="1" inputmode="numeric" />
                 <button type="button" aria-label="زيادة">+</button>
               </div>
-              <button class="btn preview" data-id="${p.id}">👁️</button>
+              <button class="btn preview" data-id="${p.id}" title="معاينة المنتج">👁️</button>
+              <button class="btn share" data-id="${p.id}" title="مشاركة المنتج">📤</button>
               <button class="btn add" data-id="${p.id}">أضف للسلة</button>
             </div>
           </div>
@@ -181,44 +573,8 @@
         list.appendChild(el);
       });
 
-      // attach qty controls
-      list.querySelectorAll('.qty').forEach(q => {
-        const input = q.querySelector('input');
-        q.children[0].addEventListener('click', () => { input.value = Math.max(1, (parseInt(input.value||'1',10)-1)); });
-        q.children[2].addEventListener('click', () => { input.value = Math.max(1, (parseInt(input.value||'1',10)+1)); });
-      });
-
-      // add-to-cart handlers
-      list.querySelectorAll('.btn.add').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          const p = PRODUCTS.find(x => x.id === id);
-          const qtyInput = btn.parentElement.querySelector('input');
-          const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
-          const existing = cart.get(id);
-          cart.set(id, { product: p, qty: (existing?.qty || 0) + qty });
-          renderCart(); // This will automatically save the cart
-          
-          // Add animation effect
-          btn.classList.add('animate-add');
-          btn.textContent = 'تم الإضافة ✓';
-          setTimeout(() => {
-            btn.textContent = 'أضف للسلة';
-            btn.classList.remove('animate-add');
-          }, 1000);
-        });
-      });
-
-      // preview handlers
-      list.querySelectorAll('.btn.preview').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          const product = PRODUCTS.find(x => x.id === id);
-          if (product) {
-            showProductPreview(product);
-          }
-        });
-      });
+      // Use the shared event handler attachment function
+      attachProductEventHandlers();
     }
 
     function renderCart() {
@@ -363,6 +719,360 @@
       document.getElementById('preview-modal').style.display = 'none';
       document.body.style.overflow = 'auto'; // Restore scrolling
       currentPreviewProduct = null;
+    }
+
+    function showSharedProductView(product) {
+      // Update Open Graph tags for the shared product
+      updateOpenGraphTags(product);
+      
+      const list = document.getElementById('products');
+      list.innerHTML = `
+        <div style="grid-column: span 12; margin-bottom: 20px;">
+          <div class="shared-product-header">
+            <h2>🔗 منتج مشارك من AquaTech Pro</h2>
+            <div class="shared-product-actions">
+              <button class="btn secondary" onclick="clearUrlParams(); renderProducts(); resetOpenGraphTags();">عرض جميع المنتجات</button>
+              <button class="btn share" onclick="shareProduct(PRODUCTS.find(p => p.id === '${product.id}'))">مشاركة مرة أخرى 📤</button>
+            </div>
+          </div>
+        </div>
+        <article class="product featured-product">
+          <img src="${product.img}" alt="${product.name}" loading="lazy" style="width: 100%; height: 300px; object-fit: cover;">
+          <div class="body">
+            <div class="product-category">${product.category}</div>
+            <h3>${product.name}</h3>
+            <div class="price">${fmt(product.price)}</div>
+            <div class="product-description">${product.description}</div>
+            <div class="controls">
+              <div class="qty" data-id="${product.id}">
+                <button type="button" aria-label="تقليل">−</button>
+                <input type="number" min="1" value="1" inputmode="numeric" />
+                <button type="button" aria-label="زيادة">+</button>
+              </div>
+              <button class="btn preview" data-id="${product.id}" title="معاينة المنتج">👁️ معاينة</button>
+              <button class="btn add" data-id="${product.id}">أضف للسلة</button>
+            </div>
+            <div class="share-info">
+              <small>💡 شارك هذا المنتج مع أصدقائك واحصل على أفضل العروض من AquaTech Pro</small>
+            </div>
+          </div>
+        </article>
+        <div style="grid-column: span 12; margin-top: 30px;">
+          <div class="related-products-header">
+            <h3>🔥 منتجات ذات صلة</h3>
+            <p>اكتشف المزيد من منتجات السباكة عالية الجودة</p>
+          </div>
+        </div>
+      `;
+
+      // Add some related products (same category or random)
+      const relatedProducts = PRODUCTS.filter(p => 
+        p.id !== product.id && (p.category === product.category || Math.random() > 0.7)
+      ).slice(0, 6);
+
+      relatedProducts.forEach(p => {
+        const el = document.createElement('article');
+        el.className = 'product';
+        el.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;">
+          <div class="body">
+            <h3>${p.name}</h3>
+            <div class="price">${fmt(p.price)}</div>
+            <div class="controls">
+              <div class="qty" data-id="${p.id}">
+                <button type="button" aria-label="تقليل">−</button>
+                <input type="number" min="1" value="1" inputmode="numeric" />
+                <button type="button" aria-label="زيادة">+</button>
+              </div>
+              <button class="btn preview" data-id="${p.id}" title="معاينة المنتج">👁️</button>
+              <button class="btn share" data-id="${p.id}" title="مشاركة المنتج">📤</button>
+              <button class="btn add" data-id="${p.id}">أضف للسلة</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+
+      // Attach event handlers (same as in renderProducts)
+      attachProductEventHandlers();
+
+      // Update page title and meta description for shared product
+      updateMetaTagsForProduct(product);
+    }
+
+    function updateMetaTagsForProduct(product) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const productImageUrl = new URL(product.img, baseUrl).href;
+      const shareUrl = generateProductShareUrl(product.id);
+      
+      // Update page title
+      document.title = `${product.name} - AquaTech Pro`;
+      
+      // Update or create meta description
+      updateOrCreateMetaTag('name', 'description', 
+        `${product.name} - ${product.description} - السعر: ${fmt(product.price)} من AquaTech Pro للسباكة`
+      );
+
+      // Update Open Graph tags for rich sharing
+      updateOrCreateMetaTag('property', 'og:title', `${product.name} - AquaTech Pro`);
+      updateOrCreateMetaTag('property', 'og:description', 
+        `${product.description} - السعر: ${fmt(product.price)} - متجر AquaTech Pro للسباكة`
+      );
+      updateOrCreateMetaTag('property', 'og:image', productImageUrl);
+      updateOrCreateMetaTag('property', 'og:image:width', '1200');
+      updateOrCreateMetaTag('property', 'og:image:height', '630');
+      updateOrCreateMetaTag('property', 'og:image:alt', product.name);
+      updateOrCreateMetaTag('property', 'og:url', shareUrl);
+      updateOrCreateMetaTag('property', 'og:type', 'product');
+      updateOrCreateMetaTag('property', 'product:price:amount', product.price.toString());
+      updateOrCreateMetaTag('property', 'product:price:currency', 'EGP');
+
+      // Update Twitter Card tags
+      updateOrCreateMetaTag('name', 'twitter:card', 'summary_large_image');
+      updateOrCreateMetaTag('name', 'twitter:title', `${product.name} - AquaTech Pro`);
+      updateOrCreateMetaTag('name', 'twitter:description', 
+        `${product.description} - السعر: ${fmt(product.price)}`
+      );
+      updateOrCreateMetaTag('name', 'twitter:image', productImageUrl);
+      updateOrCreateMetaTag('name', 'twitter:image:alt', product.name);
+
+      // Add structured data for the product
+      addProductStructuredData(product, shareUrl, productImageUrl);
+      
+      // Generate and set enhanced social media image
+      generateSocialMediaImage(product).then(imageDataUrl => {
+        if (imageDataUrl) {
+          updateOrCreateMetaTag('property', 'og:image', imageDataUrl);
+          updateOrCreateMetaTag('name', 'twitter:image', imageDataUrl);
+        }
+      }).catch(console.error);
+    }
+
+    async function generateSocialMediaImage(product) {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size for optimal social media sharing (1200x630)
+        canvas.width = 1200;
+        canvas.height = 630;
+        
+        // Background gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#0f172a');
+        gradient.addColorStop(1, '#1e293b');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Load and draw product image
+        const productImg = new Image();
+        productImg.crossOrigin = 'anonymous';
+        
+        return new Promise((resolve) => {
+          productImg.onload = () => {
+            // Draw product image on the left side
+            const imgSize = 300;
+            const imgX = 50;
+            const imgY = (canvas.height - imgSize) / 2;
+            
+            // Create rounded rectangle for image
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(imgX, imgY, imgSize, imgSize, 20);
+            ctx.clip();
+            ctx.drawImage(productImg, imgX, imgY, imgSize, imgSize);
+            ctx.restore();
+            
+            // Add border to image
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.roundRect(imgX, imgY, imgSize, imgSize, 20);
+            ctx.stroke();
+            
+            // Right side content area
+            const contentX = imgX + imgSize + 50;
+            const contentWidth = canvas.width - contentX - 50;
+            
+            // Product name
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'right';
+            ctx.direction = 'rtl';
+            
+            // Wrap text for product name
+            const lines = wrapText(ctx, product.name, contentWidth, 54);
+            let textY = 180;
+            lines.forEach(line => {
+              ctx.fillText(line, canvas.width - 50, textY);
+              textY += 60;
+            });
+            
+            // Price
+            ctx.fillStyle = '#22c55e';
+            ctx.font = 'bold 42px Arial';
+            ctx.fillText(fmt(product.price), canvas.width - 50, textY + 40);
+            
+            // Category
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '28px Arial';
+            ctx.fillText(product.category, canvas.width - 50, textY + 90);
+            
+            // Store branding
+            ctx.fillStyle = '#22c55e';
+            ctx.font = 'bold 32px Arial';
+            ctx.fillText('AquaTech Pro - سباكة احترافية', canvas.width - 50, canvas.height - 50);
+            
+            // Logo/Icon (simple circle with text)
+            ctx.beginPath();
+            ctx.arc(100, 100, 40, 0, 2 * Math.PI);
+            ctx.fillStyle = '#22c55e';
+            ctx.fill();
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('AT', 100, 110);
+            
+            resolve(canvas.toDataURL('image/png'));
+          };
+          
+          productImg.onerror = () => {
+            console.warn('Could not load product image for social media card');
+            resolve(null);
+          };
+          
+          productImg.src = product.img;
+        });
+        
+      } catch (error) {
+        console.error('Error generating social media image:', error);
+        return null;
+      }
+    }
+
+    function wrapText(ctx, text, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+      
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine + words[i] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && i > 0) {
+          lines.push(currentLine.trim());
+          currentLine = words[i] + ' ';
+        } else {
+          currentLine = testLine;
+        }
+      }
+      lines.push(currentLine.trim());
+      
+      return lines;
+    }
+
+    function updateOrCreateMetaTag(attribute, name, content) {
+      let metaTag = document.querySelector(`meta[${attribute}="${name}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute(attribute, name);
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', content);
+    }
+
+    function addProductStructuredData(product, shareUrl, imageUrl) {
+      // Remove existing product structured data
+      const existingScript = document.querySelector('#product-structured-data');
+      if (existingScript) {
+        existingScript.remove();
+      }
+
+      // Create new structured data
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description,
+        "image": imageUrl,
+        "url": shareUrl,
+        "category": product.category,
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "EGP",
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "AquaTech Pro"
+          }
+        },
+        "brand": {
+          "@type": "Brand",
+          "name": "AquaTech Pro"
+        }
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'product-structured-data';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
+
+    function attachProductEventHandlers() {
+      const list = document.getElementById('products');
+      
+      // attach qty controls
+      list.querySelectorAll('.qty').forEach(q => {
+        const input = q.querySelector('input');
+        q.children[0].addEventListener('click', () => { input.value = Math.max(1, (parseInt(input.value||'1',10)-1)); });
+        q.children[2].addEventListener('click', () => { input.value = Math.max(1, (parseInt(input.value||'1',10)+1)); });
+      });
+
+      // add-to-cart handlers
+      list.querySelectorAll('.btn.add').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const p = PRODUCTS.find(x => x.id === id);
+          const qtyInput = btn.parentElement.querySelector('input');
+          const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
+          const existing = cart.get(id);
+          cart.set(id, { product: p, qty: (existing?.qty || 0) + qty });
+          renderCart();
+          
+          // Add animation effect
+          btn.classList.add('animate-add');
+          btn.textContent = 'تم الإضافة ✓';
+          setTimeout(() => {
+            btn.textContent = 'أضف للسلة';
+            btn.classList.remove('animate-add');
+          }, 1000);
+        });
+      });
+
+      // preview handlers
+      list.querySelectorAll('.btn.preview').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const product = PRODUCTS.find(x => x.id === id);
+          if (product) {
+            showProductPreview(product);
+          }
+        });
+      });
+
+      // share handlers
+      list.querySelectorAll('.btn.share').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const product = PRODUCTS.find(x => x.id === id);
+          if (product) {
+            shareProduct(product);
+          }
+        });
+      });
     }
 
     function validateForm(isSidebar=true) { // Always use sidebar validation since main cart removed
@@ -824,6 +1534,12 @@
       }, 1000);
     });
 
+    // Share from preview
+    document.getElementById('preview-share').addEventListener('click', () => {
+      if (!currentPreviewProduct) return;
+      shareProduct(currentPreviewProduct);
+    });
+
     // ======= LOADING SCREEN =======
     let loadingProgress = 0;
     
@@ -1011,7 +1727,22 @@
         const productsLoaded = await loadProducts();
         
         if (productsLoaded) {
-          renderProducts();
+          // Check for URL parameters (shared product)
+          const urlParams = getUrlParams();
+          if (urlParams.productId && urlParams.shared) {
+            const sharedProduct = PRODUCTS.find(p => p.id === urlParams.productId);
+            if (sharedProduct) {
+              // Show the shared product in a special view
+              showSharedProductView(sharedProduct);
+            } else {
+              // Product not found, clear URL and show all products
+              clearUrlParams();
+              renderProducts();
+            }
+          } else {
+            // Normal view - show all products
+            renderProducts();
+          }
           renderCart();
         } else {
           // في حالة فشل التحميل، سيتم عرض رسالة الخطأ من خلال showLoadingError
